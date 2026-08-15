@@ -121,7 +121,6 @@ install_launch_agent() {
 
 case "$platform" in
 Darwin)
-    install_tmux_config "$project_dir/macos/tmux.conf"
     install_skhd_config
     install_launch_agent
     ;;
