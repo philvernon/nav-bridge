@@ -55,7 +55,7 @@ install_tmux_config() {
         exit 1
     fi
 
-    if [[ -e "$xdg_config_home/tmux/tmux.conf" || -d "$xdg_config_home/tmux" ]]; then
+    if [[ -e "$xdg_config_home/tmux/tmux.conf" ]]; then
         config_file="$xdg_config_home/tmux/tmux.conf"
     elif [[ -e "$HOME/.tmux.conf" ]]; then
         config_file="$HOME/.tmux.conf"
@@ -68,8 +68,17 @@ install_tmux_config() {
 }
 
 install_skhd_config() {
-    local config_file="${SKHD_CONFIG:-${XDG_CONFIG_HOME:-$HOME/.config}/skhd/skhdrc}"
-    append_source "$config_file" ".load \"$project_dir/macos/skhd.conf\""
+    local xdg_config_home="${XDG_CONFIG_HOME:-$HOME/.config}"
+    local config_file="${SKHD_CONFIG:-$xdg_config_home/skhd/skhdrc}"
+    local installed_config="$xdg_config_home/nav-bridge/skhd.conf"
+
+    mkdir -p "$(dirname -- "$installed_config")"
+    sed \
+        -e "s|__NAV_BRIDGE_DIR__|$(escape_sed_replacement "$project_dir")|g" \
+        "$project_dir/macos/skhd.conf" >"$installed_config"
+    chmod 0644 "$installed_config"
+
+    append_source "$config_file" ".load \"$installed_config\""
 }
 
 install_sway_config() {
@@ -79,10 +88,10 @@ install_sway_config() {
 }
 
 escape_sed_replacement() {
-    sed 's/[&|]/\\&/g' <<<"$1"
+    sed 's/[\\&|]/\\&/g' <<<"$1"
 }
 
-install_launch_agent() {
+install_launch_agent() (
     local socat_path
     local runtime_path
     local source_plist="$project_dir/macos/launchd/com.phil.nav-bridge.plist"
@@ -100,7 +109,7 @@ install_launch_agent() {
 
     runtime_path="$(dirname -- "$socat_path"):/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
     temporary_plist="$(mktemp)"
-    trap 'rm -f "$temporary_plist"' RETURN
+    trap 'rm -f "$temporary_plist"' EXIT
 
     sed \
         -e "s|__SOCAT__|$(escape_sed_replacement "$socat_path")|g" \
@@ -117,7 +126,7 @@ install_launch_agent() {
     launchctl enable "$service"
     launchctl kickstart -k "$service"
     printf 'Installed and started: %s\n' "$service"
-}
+)
 
 case "$platform" in
 Darwin)
