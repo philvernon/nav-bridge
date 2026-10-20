@@ -21,11 +21,6 @@ focus_yabai() {
     esac
 }
 
-if [[ "${2:-}" == "--from-remote" ]]; then
-    focus_yabai
-    exit
-fi
-
 # Detached SSH has no host tmux pane to receive send-keys.
  focused_pid="$(yabai -m query --windows --window | jq -r '.pid // empty')"
  terminal_shell=""
