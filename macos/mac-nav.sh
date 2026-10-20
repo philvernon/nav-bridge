@@ -34,6 +34,17 @@ if [[ -n "$focused_pid" ]]; then
    terminal_shell="$(pgrep -P "$focused_pid" -x zsh | head -n 1)"
 fi
 
+if [[ -n "$terminal_shell" ]] && pgrep -P "$terminal_shell" -x ssh >/dev/null; then
+   case "$direction" in
+       L) key=h ;;
+       D) key=j ;;
+       U) key=k ;;
+       R) key=l ;;
+   esac
+   skhd -t "$(printf '\033%s' "$key")"
+   exit
+fi
+
 # If tmux cannot identify a current pane, navigate at the macOS window layer.
 if ! pane_cmd="$(tmux display-message -p '#{pane_current_command}' 2>/dev/null)"; then
     focus_yabai
