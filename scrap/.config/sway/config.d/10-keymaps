@@ -1,0 +1,185 @@
+# exec xremap $HOME/.config/xremap/config.yml --watch
+### Key bindings
+#
+# Basics:
+#
+	    # Start a terminal
+    bindsym $mod+Return exec $term
+		
+
+		for_window [app_id="main-term"] mark main-term
+		assign [app_id="main-term"] workspace $ws2
+
+		# Focus or create main terminal
+		bindsym $mod+n exec zsh -ic 'swaymsg "[app_id=\"main-term\"] focus" >/dev/null 2>&1 || { "$0" --app-id main-term zsh -ic tmux-sesh & swaymsg "[app_id=\"main-term\"] focus" }' $term
+
+    # Kill focused window
+    bindsym $mod+Shift+q kill
+
+    # Start your launcher
+    bindsym $mod+o exec $menu
+
+		# Copy and paste
+		# bindsym Alt+c exec wl-copy < /dev/stdin
+		# bindsym Ctrl+v exec wl-paste
+
+    # Drag floating windows by holding down $mod and left mouse button.
+    # Resize them with right mouse button + $mod.
+    # Despite the name, also works for non-floating windows.
+    # Change normal to inverse to use left mouse button for resizing and right
+    # mouse button for dragging.
+    floating_modifier $mod normal
+
+    # Reload the configuration file
+    bindsym $mod+Shift+c reload
+
+    # Exit sway (logs you out of your Wayland session)
+    bindsym $mod+Shift+e exec swaynag -t warning -m 'You pressed the exit shortcut. Do you really want to exit sway? This will end your Wayland session.' -B 'Yes, exit sway' 'swaymsg exit'
+#
+# Moving around:
+#
+    # Move your focus around
+    bindsym $mod+$left exec "~/.config/sway/scripts/tmux_nav.sh L"
+    bindsym $mod+$right exec "~/.config/sway/scripts/tmux_nav.sh R"
+    bindsym $mod+$up exec "~/.config/sway/scripts/tmux_nav.sh U"
+    bindsym $mod+$down exec "~/.config/sway/scripts/tmux_nav.sh D"
+    # Or use $mod+[up|down|left|right]
+    bindsym $mod+Left focus left
+    bindsym $mod+Down focus down
+    bindsym $mod+Up focus up
+    bindsym $mod+Right focus right
+		# Mod+[d|f] to cycle workspaces
+		bindsym $mod+f exec "~/.config/sway/scripts/workspace_prev_next.sh next"
+		bindsym $mod+d exec "~/.config/sway/scripts/workspace_prev_next.sh prev"
+
+		bindsym $mod+p focus output left
+    bindsym $mod+Shift+p move window to output left, focus output left
+
+    # Move the focused window with the same, but add Shift
+    bindsym $mod+Shift+$left move left
+    bindsym $mod+Shift+$down move down
+    bindsym $mod+Shift+$up move up
+    bindsym $mod+Shift+$right move right
+    # Ditto, with arrow keys
+    bindsym $mod+Shift+Left move left
+    bindsym $mod+Shift+Down move down
+    bindsym $mod+Shift+Up move up
+    bindsym $mod+Shift+Right move right
+#
+# Workspaces:
+#
+    # Switch to workspace
+    bindsym $mod+1 workspace $ws1
+    bindsym $mod+2 workspace $ws2
+    bindsym $mod+3 workspace $ws3
+    bindsym $mod+4 workspace $ws4
+    bindsym $mod+5 workspace $ws5
+    bindsym $mod+6 workspace $ws6
+    bindsym $mod+7 workspace $ws7
+    bindsym $mod+8 workspace $ws8
+    bindsym $mod+9 workspace $ws9
+    bindsym $mod+0 workspace $ws0
+    # Move focused container to workspace
+    bindsym $mod+Shift+1 move container to workspace $ws1
+    bindsym $mod+Shift+2 move container to workspace $ws2
+    bindsym $mod+Shift+3 move container to workspace $ws3
+    bindsym $mod+Shift+4 move container to workspace $ws4
+    bindsym $mod+Shift+5 move container to workspace $ws5
+    bindsym $mod+Shift+6 move container to workspace $ws6
+    bindsym $mod+Shift+7 move container to workspace $ws7
+    bindsym $mod+Shift+8 move container to workspace $ws8
+    bindsym $mod+Shift+9 move container to workspace $ws9
+    bindsym $mod+Shift+0 move container to workspace $ws0
+    # Note: workspaces can have any name you want, not just numbers.
+    # We just use 1-10 as the default.
+
+		# Move focused container to next|previous
+		bindsym $mod+bracketright move container to workspace next
+		bindsym $mod+bracketleft move container to workspace prev
+
+#
+# Layout stuff:
+#
+    # You can "split" the current object of your focus with
+    # $mod+b or $mod+v, for horizontal and vertical splits
+    # respectively.
+    bindsym $mod+b splith
+    bindsym $mod+v splitv
+
+    # Switch the current container between different layout styles
+    # bindsym $mod+s layout stacking
+    bindsym $mod+w layout tabbed
+    bindsym $mod+t layout toggle split
+
+    # Make the current focus fullscreen
+    bindsym $mod+g fullscreen
+
+    # Toggle the current focus between tiling and floating mode
+    bindsym $mod+Shift+space floating toggle
+
+    # Swap focus between the tiling area and the floating area
+    bindsym $mod+space focus mode_toggle
+
+    # Move focus to the parent container
+    bindsym $mod+a focus parent
+#
+# Scratchpad:
+#
+    # Sway has a "scratchpad", which is a bag of holding for windows.
+    # You can send windows there and get them back later.
+
+    # Move the currently focused window to the scratchpad
+    bindsym $mod+Shift+m move scratchpad
+
+    # Show the next scratchpad window or hide the focused scratchpad window.
+    # If there are multiple scratchpad windows, this command cycles through them.
+    bindsym $mod+m scratchpad show
+#
+# Resizing containers:
+#
+mode "resize" {
+    # left will shrink the containers width
+    # right will grow the containers width
+    # up will shrink the containers height
+    # down will grow the containers height
+    bindsym $left resize shrink width 10px
+    bindsym $down resize grow height 10px
+    bindsym $up resize shrink height 10px
+    bindsym $right resize grow width 10px
+
+    # Ditto, with arrow keys
+    bindsym Left resize shrink width 10px
+    bindsym Down resize grow height 10px
+    bindsym Up resize shrink height 10px
+    bindsym Right resize grow width 10px
+
+    # Return to default mode
+    bindsym Return mode "default"
+    bindsym Escape mode "default"
+}
+bindsym $mod+r mode "resize"
+
+bindsym ctrl+shift+4 exec grimshot save area
+
+# Audio keys
+bindsym Scroll_Lock exec pactl set-sink-volume @DEFAULT_SINK@ +5%
+bindsym Print exec pactl set-sink-volume @DEFAULT_SINK@ -5%
+bindsym XF86AudioMute exec pactl set-sink-mute @DEFAULT_SINK@ toggle
+bindsym Pause exec playerctl play-pause
+
+bindsym $mod+Shift+o exec swaymsg -t get_outputs --raw \
+	| jq '.[] | select(.name == "HDMI-A-1") | .active' \
+	| grep -q true \
+	&& swaymsg output HDMI-A-1 disable \
+	|| swaymsg output HDMI-A-1 enable; \
+	swaymsg output HDMI-A-1 mode 3840x2160@119.880hz adaptive_sync on
+
+# bindsym $mod+Shift+o output "HDMI-A-1" disable
+# bindsym $mod+Shift+i output "HDMI-A-1" enable
+
+# bindsym XF86AudioRaiseVolume exec bash -c 'current_volume=$(pactl list sinks | grep "Volume: front-left" | awk '\''NR==1{print $5}'\'' | sed '\''s/%$//'\''); if [ $current_volume -ne 100 ] || [ $current_volume -le 100 ]; then pactl set-sink-volume @DEFAULT_SINK@ +5%; fi'
+
+# bindsym XF86AudioRaiseVolume exec bash -c 'current_volume=$(pactl list sinks | grep "^[[:space:]]Volume:" | head -n1 | awk '\''{print $5}'\'' | sed '\''s/%//'\'' ); if [ "$current_volume" -lt 100 ]; then pactl set-sink-volume @DEFAULT_SINK@ +5%; fi'
+
+# bindsym XF86AudioLowerVolume exec bash -c 'current_volume=$(pactl list sinks | grep "Volume: front-left" | awk '\''NR==1{print $5}'\'' | sed '\''s/%$//'\''); if [ $current_volume -ne 0 ] || [ $current_volume -gt 0 ]; then pactl set-sink-volume @DEFAULT_SINK@ -5%; fi'
+# pactl set-sink-volume @DEFAULT_SINK@ +5%

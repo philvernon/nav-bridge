@@ -28,9 +28,9 @@ if ! pane_cmd="$(tmux display-message -p '#{pane_current_command}' 2>/dev/null)"
 fi
 
 # Preserve Meta+hjkl across an SSH pane so the remote side can handle it.
-if [[ "$pane_cmd" == "ssh" ]]; then
-    exec "$script_dir/ssh-nav.sh" "$direction"
-fi
+# if [[ "$pane_cmd" == "ssh" ]]; then
+#     exec "$script_dir/ssh-nav.sh" "$direction"
+# fi
 
 case "$direction" in
     L)
