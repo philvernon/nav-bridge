@@ -21,6 +21,19 @@ focus_yabai() {
     esac
 }
 
+if [[ "${2:-}" == "--from-remote" ]]; then
+    focus_yabai
+    exit
+fi
+
+# Detached SSH has no host tmux pane to receive send-keys.
+ focused_pid="$(yabai -m query --windows --window | jq -r '.pid // empty')"
+ terminal_shell=""
+
+if [[ -n "$focused_pid" ]]; then
+   terminal_shell="$(pgrep -P "$focused_pid" -x zsh | head -n 1)"
+fi
+
 # If tmux cannot identify a current pane, navigate at the macOS window layer.
 if ! pane_cmd="$(tmux display-message -p '#{pane_current_command}' 2>/dev/null)"; then
     focus_yabai
